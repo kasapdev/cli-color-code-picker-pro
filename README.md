@@ -1,6 +1,6 @@
 # CLI Color Code Picker Pro
 
-[![CI](https://github.com/kasapdev/cli-color-code-picker-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/kasapdev/cli-color-code-picker-pro/actions/workflows/ci.yml)
+[![CI](https://github.com/kasapdev/cli-color-code-picker-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/kasapdev/cli-color-code-picker-pro/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Vanilla JS](https://img.shields.io/badge/Vanilla-JS-F7DF1E?logo=javascript&logoColor=black)
 
 Pick terminal ANSI colors and text styles visually, preview them in a mock terminal, and copy ready-to-use Bash and Node.js snippets.
 
