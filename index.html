@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08090d">
+  <meta name="description" content="Visual picker for terminal ANSI escape codes — 16/256-color palettes, text styles, a live mock-terminal preview, and ready-to-paste Bash/Node/raw-ANSI output.">
+  <title>CLI Color Code Picker — Web Utility Suite</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="topbar container">
+    <a class="brand" href="https://github.com/kasapdev/cli-color-code-picker-pro" aria-label="Back to CLI Color Code Picker">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 17 10 11 4 5"/>
+          <line x1="12" y1="19" x2="20" y2="19"/>
+        </svg>
+      </span>
+      <span class="col" style="gap:0">
+        <span>CLI Color Code Picker</span>
+        <span class="sub">Web Utility Suite</span>
+      </span>
+    </a>
+    <span class="spacer"></span>
+
+    <span id="statusBadge" class="badge" role="status" aria-live="polite" title="Selection">
+      <span class="status-dot" aria-hidden="true"></span><span id="statusText">Default</span>
+    </span>
+
+    <button class="btn btn--icon" data-shortcut-help title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"/>
+      </svg>
+    </button>
+    <button class="btn btn--icon" data-theme-toggle title="Toggle theme" aria-label="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="container">
+    <!-- Preview terminal -->
+    <section class="panel term-panel fade-in" aria-label="Live preview">
+      <div class="pane-head">
+        <h2 class="pane-title">Live preview</h2>
+        <span class="muted pane-meta mono">Mock terminal</span>
+      </div>
+      <div class="term-window">
+        <div class="term-titlebar">
+          <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+          <span class="term-title mono">bash — 80x24</span>
+        </div>
+        <div class="term-body">
+          <span class="term-prompt mono">$ </span><span id="termPreview" class="mono"></span><span class="term-cursor" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="field-inline" style="margin-top:var(--space-4)">
+        <label for="previewText">Preview text</label>
+        <input type="text" id="previewText" class="mono" maxlength="80" value="Hello, world!" aria-label="Preview text">
+      </div>
+    </section>
+
+    <!-- Foreground / Background swatches -->
+    <section class="grid grid--2 rise" aria-label="Color pickers">
+      <div class="panel">
+        <div class="pane-head">
+          <h2 class="pane-title">Foreground</h2>
+          <span id="fgLabel" class="muted pane-meta mono">Default</span>
+        </div>
+        <div class="swatch-row" id="fgSwatches" role="group" aria-label="Foreground colors"></div>
+      </div>
+      <div class="panel">
+        <div class="pane-head">
+          <h2 class="pane-title">Background</h2>
+          <span id="bgLabel" class="muted pane-meta mono">Default</span>
+        </div>
+        <div class="swatch-row" id="bgSwatches" role="group" aria-label="Background colors"></div>
+      </div>
+    </section>
+
+    <!-- 256-color palette -->
+    <section class="panel fade-in" aria-label="256-color palette">
+      <div class="pane-head">
+        <h2 class="pane-title">256-color palette</h2>
+        <div class="segmented" id="palTargetSeg" role="tablist" aria-label="Apply 256-color to">
+          <button type="button" role="tab" aria-selected="true" data-target="fg">Foreground</button>
+          <button type="button" role="tab" aria-selected="false" data-target="bg">Background</button>
+        </div>
+      </div>
+      <div class="grid256" id="grid256" role="group" aria-label="256-color swatches"></div>
+    </section>
+
+    <!-- Style toggles -->
+    <section class="panel toolbar-panel fade-in" aria-label="Text styles">
+      <div class="pane-head" style="border-bottom:none;padding-bottom:0">
+        <h2 class="pane-title">Styles</h2>
+      </div>
+      <div class="toolbar" id="styleToggles">
+        <label class="check"><span class="switch"><input type="checkbox" id="styleBold" data-code="1"><span class="track"></span><span class="thumb"></span></span><span class="secondary">Bold</span></label>
+        <label class="check"><span class="switch"><input type="checkbox" id="styleDim" data-code="2"><span class="track"></span><span class="thumb"></span></span><span class="secondary">Dim</span></label>
+        <label class="check"><span class="switch"><input type="checkbox" id="styleItalic" data-code="3"><span class="track"></span><span class="thumb"></span></span><span class="secondary">Italic</span></label>
+        <label class="check"><span class="switch"><input type="checkbox" id="styleUnderline" data-code="4"><span class="track"></span><span class="thumb"></span></span><span class="secondary">Underline</span></label>
+        <label class="check"><span class="switch"><input type="checkbox" id="styleBlink" data-code="5"><span class="track"></span><span class="thumb"></span></span><span class="secondary">Blink</span></label>
+        <label class="check"><span class="switch"><input type="checkbox" id="styleReverse" data-code="7"><span class="track"></span><span class="thumb"></span></span><span class="secondary">Reverse</span></label>
+        <span class="spacer hide-sm"></span>
+        <button id="btnReset" class="btn btn--sm btn--ghost" title="Reset all selections">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+    </section>
+
+    <!-- Output -->
+    <section class="grid fade-in" aria-label="Generated output" style="margin-top:var(--space-5)">
+      <div class="panel output-block">
+        <div class="pane-head">
+          <h2 class="pane-title">Raw ANSI escape sequence</h2>
+          <button class="btn btn--sm" id="btnCopyRaw" title="Copy">Copy</button>
+        </div>
+        <pre id="outRaw" class="output-code mono" tabindex="0"></pre>
+      </div>
+      <div class="panel output-block">
+        <div class="pane-head">
+          <h2 class="pane-title">Bash</h2>
+          <button class="btn btn--sm" id="btnCopyBash" title="Copy">Copy</button>
+        </div>
+        <pre id="outBash" class="output-code mono" tabindex="0"></pre>
+      </div>
+      <div class="panel output-block">
+        <div class="pane-head">
+          <h2 class="pane-title">Node.js</h2>
+          <button class="btn btn--sm" id="btnCopyNode" title="Copy">Copy</button>
+        </div>
+        <pre id="outNode" class="output-code mono" tabindex="0"></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer container">
+    Part of the <a href="https://github.com/kasapdev">Web Utility Suite</a> &middot; MIT Licensed
+  </footer>
+
+  <div id="helpBackdrop" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="row between center" style="margin-bottom:var(--space-4)">
+        <h3 id="helpTitle" style="margin:0">Keyboard shortcuts</h3>
+        <button id="helpClose" class="btn btn--icon btn--ghost" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <table class="shortcut-table">
+        <tbody id="shortcutRows"></tbody>
+      </table>
+      <p class="muted" style="margin:var(--space-4) 0 0;font-size:13px">Tip: <kbd>mod</kbd> means <kbd>Ctrl</kbd> on Windows/Linux and <kbd>&#8984;</kbd> on macOS.</p>
+    </div>
+  </div>
+
+  <script src="assets/js/core.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

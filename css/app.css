@@ -1,0 +1,146 @@
+/* =====================================================================
+   CLI Color Code Picker Pro — app.css
+   Extends the shared design system (base.css). Colors derive ONLY from
+   base.css CSS variables (plus real ANSI RGB values) so both themes work.
+   ===================================================================== */
+
+[data-theme="light"] .icon-sun { display: none; }
+.icon-moon { display: none; }
+[data-theme="light"] .icon-moon { display: inline; }
+
+#statusBadge .status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-muted); flex: none;
+  transition: background var(--dur-2), box-shadow var(--dur-2);
+}
+#statusBadge.is-valid { background: var(--success-soft); color: var(--success); border-color: transparent; }
+#statusBadge.is-valid .status-dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
+
+.grid--2 { grid-template-columns: 1fr 1fr; margin-top: var(--space-5); }
+
+.pane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-4);
+}
+.pane-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.pane-meta { font-size: 12px; }
+
+/* ===================== Terminal preview ===================== */
+.term-window {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  background: #0b0d12;
+  box-shadow: var(--shadow-md);
+}
+.term-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #171a21;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.term-titlebar .dot { width: 11px; height: 11px; border-radius: 50%; }
+.dot--r { background: #ff5f56; }
+.dot--y { background: #ffbd2e; }
+.dot--g { background: #27c93f; }
+.term-title { margin-left: auto; margin-right: auto; color: #8a8f98; font-size: 12px; }
+.term-body {
+  padding: var(--space-5);
+  min-height: 90px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #e6e6e6;
+  background: #0b0d12;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.term-prompt { color: #27c93f; }
+.term-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background: #e6e6e6;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: blink-caret 1s step-end infinite;
+}
+@keyframes blink-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+/* ===================== Swatches ===================== */
+.swatch-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: var(--space-2);
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color var(--dur-1), transform var(--dur-1);
+  font-size: 10.5px;
+  color: var(--text-secondary);
+}
+.swatch:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+.swatch.is-active { border-color: var(--brand-400, #818cf8); box-shadow: 0 0 0 2px rgba(99,102,241,.35); color: var(--text); }
+.swatch-chip { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(255,255,255,.15); }
+.swatch-none { border-style: dashed; }
+
+/* ===================== 256 grid ===================== */
+.grid256 {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 3px;
+}
+.sw256 {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,.08);
+  cursor: pointer;
+  min-width: 0;
+  padding: 0;
+}
+.sw256.is-active { outline: 2px solid var(--brand-400, #818cf8); outline-offset: 1px; }
+
+@media (max-width: 720px) {
+  .grid--2 { grid-template-columns: 1fr; }
+  .grid256 { grid-template-columns: repeat(8, 1fr); }
+}
+
+/* ===================== Output blocks ===================== */
+.output-block .output-code {
+  margin: 0;
+  padding: var(--space-4);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--surface-solid);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  min-height: 48px;
+}
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+.toolbar .spacer { flex: 1; }
+
+@keyframes ansiBlink { 50% { opacity: .3; } }
