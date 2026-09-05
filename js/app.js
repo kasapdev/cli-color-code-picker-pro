@@ -102,7 +102,9 @@
      BUILD SGR CODE LIST
      ================================================================= */
   function buildCodes() {
-    var codes = state.styles.slice();
+    // Sensible, predictable order regardless of click order: styles
+    // ascending (1,2,3,4,5,7), then foreground, then background.
+    var codes = state.styles.slice().sort(function (a, b) { return a - b; });
     if (state.fg) {
       if (state.fg.type === '16') codes.push(state.fg.code);
       else codes.push('38;5;' + state.fg.code);
@@ -225,11 +227,11 @@
       ? '\\x1b[' + codeStr + 'm' + text + '\\x1b[0m'
       : text;
     var bash = hasCodes
-      ? 'echo -e "\\e[' + codeStr + 'm' + escapeForShell(text) + '\\e[0m"'
-      : 'echo "' + escapeForShell(text) + '"';
+      ? 'echo -e "\\033[' + codeStr + 'm' + escapeForShell(text) + '\\033[0m"'
+      : 'echo -e "' + escapeForShell(text) + '"';
     var node = hasCodes
-      ? "console.log('\\x1b[" + codeStr + "m" + escapeForJs(text) + "\\x1b[0m');"
-      : "console.log(" + JSON.stringify(text) + ");";
+      ? "console.log('\\x1b[" + codeStr + "m%s\\x1b[0m', '" + escapeForJs(text) + "');"
+      : "console.log('" + escapeForJs(text) + "');";
 
     outRaw.textContent = raw;
     outBash.textContent = bash;
@@ -348,7 +350,7 @@
   var shortcutRows = document.getElementById('shortcutRows');
 
   var SHORTCUTS = [
-    { keys: ['mod', 'R'], desc: 'Reset selection' },
+    { keys: ['mod', 'shift', 'R'], desc: 'Reset selection' },
     { keys: ['?'], desc: 'Show this help' },
     { keys: ['Esc'], desc: 'Close dialog' }
   ];
@@ -379,7 +381,7 @@
   document.getElementById('btnReset').addEventListener('click', resetAll);
   previewText.addEventListener('input', function () { updateAll(); persistDebounced(); });
 
-  WUS.registerShortcut('mod+r', function () { resetAll(); }, 'Reset selection');
+  WUS.registerShortcut('mod+shift+r', function () { resetAll(); }, 'Reset selection');
   WUS.registerShortcut('?', function () { openHelp(); }, 'Show shortcuts');
 
   /* =================================================================

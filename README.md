@@ -41,7 +41,7 @@ Then open `index.html` in any modern browser (double-click it, or `file://` it).
 
 | Action               | Shortcut     |
 | -------------------- | ------------ |
-| Reset selection      | <kbd>Ctrl/⌘</kbd> + <kbd>R</kbd> |
+| Reset selection      | <kbd>Ctrl/⌘</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> |
 | Show shortcuts help  | <kbd>?</kbd> |
 | Close dialog         | <kbd>Esc</kbd> |
 
