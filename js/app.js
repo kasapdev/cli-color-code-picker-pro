@@ -350,7 +350,7 @@
   var shortcutRows = document.getElementById('shortcutRows');
 
   var SHORTCUTS = [
-    { keys: ['mod', 'shift', 'R'], desc: 'Reset selection' },
+    { keys: ['alt', 'shift', 'R'], desc: 'Reset selection' },
     { keys: ['?'], desc: 'Show this help' },
     { keys: ['Esc'], desc: 'Close dialog' }
   ];
@@ -381,7 +381,11 @@
   document.getElementById('btnReset').addEventListener('click', resetAll);
   previewText.addEventListener('input', function () { updateAll(); persistDebounced(); });
 
-  WUS.registerShortcut('mod+shift+r', function () { resetAll(); }, 'Reset selection');
+  // Note: NOT mod+shift+r — that combo is intercepted by Chrome/Firefox/Edge
+  // as the browser's own "hard reload" shortcut before it ever reaches page
+  // JS, so a page-level keydown handler can never preventDefault() it. Using
+  // alt+shift+r keeps the mnemonic while avoiding a reserved browser combo.
+  WUS.registerShortcut('alt+shift+r', function () { resetAll(); }, 'Reset selection');
   WUS.registerShortcut('?', function () { openHelp(); }, 'Show shortcuts');
 
   /* =================================================================
